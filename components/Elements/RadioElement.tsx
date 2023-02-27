@@ -1,41 +1,40 @@
-// import { useState } from "react";
-// import { Text, View } from "react-native";
-// import { RadioButton } from "react-native-paper";
-
-// export const Element = () => {
-//   const [checked, setChecked] = useState<string>("");
-//     return (
-//       <View style={{flex:1,flexDirection:"row",alignItems:"center",justifyContent:"center"}}>
-//         <RadioButton
-//           value="ele"
-//           status={checked === "ele" ? "checked" : "unchecked"}
-//           onPress={() => setChecked("ele")}
-//           color="blue"
-//         />
-//       </View>
-//     );
-//   };
 import React, { useState } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { RadioButton } from "react-native-paper";
 
 interface QuestionProps {
+  question: string;
+  type: string;
   optionA?: string;
   optionB?: string;
   optionC?: string;
   optionD?: string;
   optionE?: string;
+  id: number;
 }
 
 interface ElementProps {
   e: string;
   checked: string;
   setChecked: (value: string) => void;
+  handelSingleRadio: (selection: {
+    question: string;
+    answer: string;
+    type: string;
+    id: number;
+  }) => void;
+  question: QuestionProps;
 }
 
-export const SingleRadioElement: React.FC<{ options: QuestionProps }> = ({
-  options,
-}) => {
+export const SingleRadioElement: React.FC<{
+  options: QuestionProps;
+  handelSingleRadio: (selection: {
+    question: string;
+    answer: string;
+    type: string;
+    id: number;
+  }) => void;
+}> = ({ options, handelSingleRadio }) => {
   const [checked, setChecked] = useState<string>("");
 
   return (
@@ -45,6 +44,8 @@ export const SingleRadioElement: React.FC<{ options: QuestionProps }> = ({
           e={options.optionA}
           checked={checked}
           setChecked={setChecked}
+          handelSingleRadio={handelSingleRadio}
+          question={options}
         />
       ) : null}
       {options.optionB ? (
@@ -52,6 +53,8 @@ export const SingleRadioElement: React.FC<{ options: QuestionProps }> = ({
           e={options.optionB}
           checked={checked}
           setChecked={setChecked}
+          handelSingleRadio={handelSingleRadio}
+          question={options}
         />
       ) : null}
       {options.optionC ? (
@@ -59,6 +62,8 @@ export const SingleRadioElement: React.FC<{ options: QuestionProps }> = ({
           e={options.optionC}
           checked={checked}
           setChecked={setChecked}
+          handelSingleRadio={handelSingleRadio}
+          question={options}
         />
       ) : null}
       {options.optionD ? (
@@ -66,20 +71,21 @@ export const SingleRadioElement: React.FC<{ options: QuestionProps }> = ({
           e={options.optionD}
           checked={checked}
           setChecked={setChecked}
-        />
-      ) : null}
-      {options.optionE ? (
-        <Element
-          e={options.optionC}
-          checked={checked}
-          setChecked={setChecked}
+          handelSingleRadio={handelSingleRadio}
+          question={options}
         />
       ) : null}
     </>
   );
 };
 
-const Element: React.FC<ElementProps> = ({ e, checked, setChecked }) => {
+const Element: React.FC<ElementProps> = ({
+  e,
+  checked,
+  setChecked,
+  handelSingleRadio,
+  question,
+}) => {
   return (
     <View
       style={{
@@ -87,12 +93,21 @@ const Element: React.FC<ElementProps> = ({ e, checked, setChecked }) => {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
+        width: "30%",
       }}
     >
       <RadioButton
         value={e}
         status={checked === e ? "checked" : "unchecked"}
-        onPress={() => setChecked(e)}
+        onPress={() => {
+          setChecked(e);
+          handelSingleRadio({
+            id: question.id,
+            answer: e,
+            type: question.type,
+            question: question.question,
+          });
+        }}
         color="green"
       />
     </View>

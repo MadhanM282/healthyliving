@@ -1,17 +1,85 @@
-import { useState } from "react";
-import { Text, View } from "react-native";
+import React, { useState } from "react";
+import { View, StyleSheet } from "react-native";
 import CheckBox from "react-native-check-box";
-export const Check = ({label}) => {
-  const [State, SetState] = useState(false);
+type Question = {
+  label: undefined;
+  question: string;
+  optionA?: string;
+  optionB?: string;
+  optionC?: string;
+  optionD?: string;
+  optionE?: string;
+  optionF?: string;
+  type: string;
+  section: string;
+  headerLabel: string;
+  qno?: string;
+  id: number;
+  Survey: {
+    questionID: string;
+    answer: string;
+  };
+};
+
+export const Check: React.FC<{
+  item: Question;
+  values: {
+    question: string;
+    answer: string[];
+    type: string;
+    id: number;
+  }[];
+  label: string;
+  SetValues: {
+    (
+      value: React.SetStateAction<
+        { question: string; answer: string[]; type: string; id: number }[]
+      >
+    ): void;
+    (
+      value: React.SetStateAction<
+        { question: string; answer: string[]; type: string; id: number }[]
+      >
+    ): void;
+    (
+      value: React.SetStateAction<
+        { question: string; answer: string[]; type: string; id: number }[]
+      >
+    ): void;
+  };
+}> = ({ label, item, values, SetValues }) => {
+  const [state, setState] = useState<boolean>(false);
+  const HandelClick = (e: string) => {
+    SetValues([
+      ...values,
+      {
+        ["id"]: item.id,
+        ["answer"]: [e],
+        ["type"]: item.type,
+        ["question"]: item.question,
+      },
+    ]);
+  };
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center',gap:10,padding:10}}>
+    <View style={styles.container}>
       <CheckBox
-        isChecked={State}
-        onClick={() => SetState(!State)}
-        checkBoxColor={'#667080'}
-        
+        isChecked={state}
+        onClick={() => {
+          setState(!state);
+          HandelClick(label);
+        }}
+        checkBoxColor={"green"}
+        uncheckedCheckBoxColor={"#D9D9D9"}
       />
-      <Text style={{color:"#667080"}}>{label}</Text>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "center",
+    padding: 8,
+  },
+});

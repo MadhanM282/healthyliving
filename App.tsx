@@ -1,41 +1,21 @@
-// /**
-//  * Sample React Native App
-//  * https://github.com/facebook/react-native
-//  *
-//  * @format
-//  */
-
-// import React from "react";
-
-// import { View, Text } from "react-native";
-// import { NavigationContainer } from "@react-navigation/native";
-// import { createNativeStackNavigator } from "@react-navigation/native-stack";
-// import { SectionCard } from "./components/Questionary/section";
-// import { RootStackParamList } from "./components/types";
-
-// function App(): JSX.Element {
-//   const Stack = createNativeStackNavigator<RootStackParamList>();
-
-//   return (
-//     <NavigationContainer>
-//       <Stack.Navigator>
-//         <Stack.Screen name="Home" component={SectionCard} />
-//       </Stack.Navigator>
-//     </NavigationContainer>
-//   );
-// }
-
-// export default App;
-
-import React from "react";
-import { Text, View, Button, Image, StyleSheet } from "react-native";
-import { NavigationContainer, StackActions } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import {
+  Text,
+  View,
+  Button,
+  Image,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Knowledge } from "./components/Questionary/Knoledge";
 import { Attitude } from "./components/Questionary/Attitude";
 import { Practice } from "./components/Questionary/Practical";
+import { IconButton } from "react-native-paper";
+const { width: screenWidth } = Dimensions.get("window");
 
 type RootStackParamList = {
   ScreenA: undefined;
@@ -43,27 +23,18 @@ type RootStackParamList = {
 };
 
 type ScreenANavigationProp = StackNavigationProp<RootStackParamList, "ScreenA">;
-type ScreenBNavigationProp = StackNavigationProp<RootStackParamList, "ScreenB">;
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
 
 function App() {
+  // eslint-disable-next-line no-console
+  console.log({ name: Tab.Screen });
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerLeftLabelVisible: false,
-        }}
-      >
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="ScreenA" component={ScreenA} />
-        <Stack.Screen
-          options={{
-            title: "",
-          }}
-          name="ScreenB"
-          component={ScreenB}
-        />
+        <Stack.Screen name="ScreenB" component={ScreenB} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -73,106 +44,125 @@ function ScreenA({ navigation }: { navigation: ScreenANavigationProp }) {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Button
-        title="Go to Screen B"
+        title="KAP Questionary"
         onPress={() => navigation.navigate("ScreenB")}
       />
     </View>
   );
 }
 
-function ScreenB() {
+const Headercomponent = (navigation: ScreenANavigationProp) => {
+  return (
+    <View style={Styles.containor}>
+      <IconButton
+        style={{ marginLeft: -10 }}
+        icon={{ uri: "https://img.icons8.com/windows/56/left.png" }}
+        size={40}
+        onPress={() => navigation.navigate("ScreenA")}
+      />
+
+      <Text style={Styles.HeroTitle}>KAP Questions</Text>
+      <Image
+        style={Styles.ProfileImage}
+        source={require("./profile.png")}
+        alt=""
+      />
+    </View>
+  );
+};
+
+function ScreenB({ navigation }: { navigation: ScreenANavigationProp }) {
+  const [Section, SetSection] = useState("");
   return (
     <>
-      <View style={Styles.containor}>
-        <Text style={Styles.HeroTitle}>Student Questionary</Text>
-        <Image
-          style={Styles.ProfileImage}
-          source={require("./profile.png")}
-          alt=""
-        />
+      {Headercomponent(navigation)}
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: 20,
+          backgroundColor: "white",
+          borderBottomWidth: 8,
+          borderBottomColor: "#7FCEEE",
+        }}
+      >
+        <Text
+          style={{
+            color: "black",
+            fontWeight: "500",
+            fontSize: 18,
+            borderRightWidth: 1,
+            borderRightColor: "black",
+            paddingRight: 20,
+            paddingLeft: 10,
+            paddingBottom: 10,
+          }}
+        >
+          Name Of Student
+        </Text>
+        <Text style={{ color: "black", fontWeight: "500", fontSize: 18 }}>
+          ID
+        </Text>
       </View>
       <Tab.Navigator
         screenOptions={{
-          tabBarShowLabel: false,
+          tabBarActiveTintColor: "#0074F9",
+          tabBarInactiveTintColor: "grey",
+          tabBarLabelStyle: { fontSize: 18 },
         }}
       >
         <Tab.Screen
+          listeners={{
+            tabPress: () => {
+              SetSection("Knowledge Related");
+            },
+          }}
           options={{
             tabBarStyle: {
               backgroundColor: "white",
             },
-            tabBarIcon: (props: { focused: boolean; color: string }) => {
-              return (
-                <View style={{ marginLeft: -85 }}>
-                  <Text
-                    style={{
-                      width: 200,
-                      marginLeft: 0,
-                      fontSize: 13,
-                      color: "black",
-                      textAlign: "center",
-                      fontWeight: "500",
-                    }}
-                  >
-                    Knowledge Related Questions
-                  </Text>
-                </View>
-              );
+            tabBarLabelStyle: {
+              textTransform: "none",
+              fontSize: 18,
             },
           }}
-          name="Knowledge"
+          name="Knowledge Related"
           component={Tab1}
         />
         <Tab.Screen
+          listeners={{
+            tabPress: () => {
+              SetSection("Attitude Related");
+            },
+          }}
           options={{
             tabBarStyle: {
               backgroundColor: "white",
             },
-            tabBarIcon: (props: { focused: boolean; color: string }) => {
-              return (
-                <View style={{ marginLeft: -85 }}>
-                  <Text
-                    style={{
-                      width: 200,
-                      marginLeft: 0,
-                      color: "black",
-                      textAlign: "center",
-                      fontWeight: "500",
-                    }}
-                  >
-                    Attitude Related Questions
-                  </Text>
-                </View>
-              );
+            tabBarLabelStyle: {
+              textTransform: "none",
+              fontSize: 18,
             },
           }}
-          name="Attitude Related Questions"
+          name="Attitude Related"
           component={Tab2}
         />
         <Tab.Screen
+          listeners={{
+            tabPress: () => {
+              SetSection("Practical Related");
+            },
+          }}
           options={{
             tabBarStyle: {
               backgroundColor: "white",
             },
-            tabBarIcon: (props: { focused: boolean; color: string }) => {
-              return (
-                <View style={{ marginLeft: -85 }}>
-                  <Text
-                    style={{
-                      width: 200,
-                      marginLeft: 0,
-                      color: "black",
-                      textAlign: "center",
-                      fontWeight: "500",
-                    }}
-                  >
-                    Practical Related Questions
-                  </Text>
-                </View>
-              );
+            tabBarLabelStyle: {
+              textTransform: "none",
+              fontSize: 18,
             },
           }}
-          name="PracticalRelated Questions"
+          name="Practice Related"
           component={Tab3}
         />
       </Tab.Navigator>
@@ -190,7 +180,7 @@ function Tab1() {
 
 function Tab2() {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View>
       <Attitude />
     </View>
   );
@@ -211,20 +201,22 @@ const Styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     backgroundColor: "white",
-    marginTop: "-1%",
+    height: 90,
+    display: "flex",
+    flexDirection: "row",
+    width: screenWidth,
+
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   HeroTitle: {
     textAlign: "center",
-    marginTop: 13,
-    // marginRight:282,
     fontWeight: "500",
-    fontSize: 32,
+    fontSize: 30,
     color: "black",
     fontFamily: "SF Pro Display",
   },
   ProfileImage: {
-    marginLeft: "90%",
-    marginTop: "-8%",
     width: 50,
     height: 50,
     borderRadius: 25,

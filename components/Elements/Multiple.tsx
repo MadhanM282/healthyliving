@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { RadioButton } from "react-native-paper";
 
 interface QuestionProps {
@@ -44,27 +44,13 @@ export const SingleRadio: React.FC<{ options: QuestionProps }> = ({
           setChecked={setChecked}
         />
       ) : null}
-      {options.optionD ? (
-        <Element
-          e={options.optionD}
-          checked={checked}
-          setChecked={setChecked}
-        />
-      ) : null}
-      {options.optionE ? (
-        <Element
-          e={options.optionC}
-          checked={checked}
-          setChecked={setChecked}
-        />
-      ) : null}
     </>
   );
 };
 
 const Element: React.FC<ElementProps> = ({ e, checked, setChecked }) => {
   return (
-    <View style={{flex:1,flexDirection:"row",alignItems:"center"}}>
+    <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
       <RadioButton
         value={e}
         status={checked === e ? "checked" : "unchecked"}
